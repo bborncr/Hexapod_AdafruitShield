@@ -1,4 +1,6 @@
-                                     // IRremote library written by Ken Shirriff
+// Infrared Remote Control library: http://tech.cyborg5.com/irlib/
+// Hexapod code based on example code from DAGU
+// Adafruit_PWMServoDriver library: https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <IRLib.h> 
@@ -34,8 +36,8 @@ IRdecode My_Decoder;
 void setup()
 {
   
-  Serial.begin(9600);                        // IR test mode displays IR receiver values on serial monitor
-  irrecv.enableIRIn();      // Start the receiver
+  Serial.begin(9600);                     
+  irrecv.enableIRIn();
   pulseconstant = (1000000/SERVOFREQ)/4096;
 
   pwm.begin();
@@ -50,13 +52,12 @@ void setup()
 
 void loop()
 { 
-  if (irrecv.GetResults(&My_Decoder))                             // check for IR command
-  {                                                        // change IRC comparison values to suit your TV, DVD, Stereo remote
+  if (irrecv.GetResults(&My_Decoder))                            
+  {                                                 
     My_Decoder.decode();
     //My_Decoder.DumpResults();
     unsigned long IRC=My_Decoder.value;
-    Serial.println(IRC,HEX);                     // display value from IR receiver on serial monitor in test mode
-
+    Serial.println(IRC,HEX);                     
     if(IRC==FIVE)                              // STOP
     {
       Speed=0;
@@ -179,10 +180,8 @@ void Walk()                                                // all legs move in a
     Knee=sin(A)*Stride;
     Hip=cos(A)*Xa;
 
-    servoWrite(i*2,1500+int(Knee));
-    servoWrite(i*2+1,1500+int(Hip));
-    //sv[i*2].writeMicroseconds(svc[i*2]+int(Knee));         // update knee  servos 1,3,5
-    //sv[i*2+1].writeMicroseconds(svc[i*2+1]+int(Hip));      // update hip servos 1,3,5
+    servoWrite(i*2,1500+int(Knee));  // update knee  servos 1,3,5
+    servoWrite(i*2+1,1500+int(Hip)); // update hip servos 1,3,5
   }
 
   for(int i=1;i<6;i+=2)                                    // calculate positions for even numbered legs 2,4,6
@@ -203,11 +202,9 @@ void Walk()                                                // all legs move in a
     Knee=sin(A)*Stride;
     Hip=cos(A)*Xa;
     
-    servoWrite(i*2,1500+int(Knee));
-    servoWrite(i*2+1,1500+int(Hip));
+    servoWrite(i*2,1500+int(Knee)); // update knee  servos 2,4,6
+    servoWrite(i*2+1,1500+int(Hip)); // update hip servos 2,4,6
 
-    //sv[i*2].writeMicroseconds(svc[i*2]+int(Knee));         // update knee  servos 2,4,6
-    //sv[i*2+1].writeMicroseconds(svc[i*2+1]+int(Hip));      // update hip servos 2,4,6
   }
 
   Step+=Speed;                                             // cycle through circular motion of gait
